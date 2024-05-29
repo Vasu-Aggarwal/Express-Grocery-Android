@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.expressstore.navigation.App
 import com.example.expressstore.screens.LoginScreen
 import com.example.expressstore.ui.theme.ExpressStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,16 +37,6 @@ class MainActivity : ComponentActivity() {
             ExpressStoreTheme {
                 App()
             }
-        }
-    }
-}
-
-@Composable
-fun App(){
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "login"){
-        composable(route = "login"){
-            LoginScreen()
         }
     }
 }
