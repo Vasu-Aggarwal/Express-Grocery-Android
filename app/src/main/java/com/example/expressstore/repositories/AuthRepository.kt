@@ -24,13 +24,13 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
             "password" to password
         )
         val response = authService.loginUser(body)
-        if (response.isSuccessful && response.body() != null){
+        if (response.isSuccessful){
             val authToken = response.body()!!.get("token")
             val refreshToken = response.body()!!.get("refreshToken")
             tokenManager.saveAuthToken(authToken, refreshToken)
             _user.emit(response.body())
         } else {
-            Toast.makeText(context, response.errorBody()?.string(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, response.body().toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }

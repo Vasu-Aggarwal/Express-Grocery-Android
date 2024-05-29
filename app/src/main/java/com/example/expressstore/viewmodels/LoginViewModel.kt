@@ -27,11 +27,6 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
             _loginState.value = LoginState.Success
         }
     }
-//    init {
-//        viewModelScope.launch {
-//            repository.login("Tiffany.Bogan29@yahoo.com", "vasu")
-//        }
-//    }
 
 }
 
