@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
-    private val BASE_URL = "http://10.100.103.228:9090"
+    private val BASE_URL = "http://10.100.100.226:9090"
 
     @Provides
     @Singleton

@@ -1,6 +1,7 @@
 package com.example.expressstore.screens
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,7 +74,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
             Text("Login")
         }
         Spacer(modifier = Modifier.height(16.dp))
-
+        Log.i("User came with error", "LoginScreen: "+user.value)
         when (loginState) {
             is LoginState.Loading -> Text("Loading...")
             is LoginState.Success -> Text("Login Successful!")

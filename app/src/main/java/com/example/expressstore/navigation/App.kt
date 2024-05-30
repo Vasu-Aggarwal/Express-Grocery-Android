@@ -13,7 +13,7 @@ fun App(){
     NavHost(navController = navController, startDestination = "login"){
         composable(route = "login"){
             LoginScreen()
-            navController.navigate("home")
+//            navController.navigate("home")
         }
 
         composable(route = "home"){

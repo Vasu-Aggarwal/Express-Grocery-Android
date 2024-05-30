@@ -3,8 +3,11 @@ package com.example.expressstore.repositories
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.example.expressstore.models.ErrorResponse
 import com.example.expressstore.services.AuthService
 import com.example.expressstore.services.TokenManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,13 +27,30 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
             "password" to password
         )
         val response = authService.loginUser(body)
-        if (response.isSuccessful){
+        if (response.isSuccessful && response.body()!=null){
             val authToken = response.body()!!.get("token")
             val refreshToken = response.body()!!.get("refreshToken")
             tokenManager.saveAuthToken(authToken, refreshToken)
             _user.emit(response.body())
         } else {
-            Toast.makeText(context, response.body().toString(), Toast.LENGTH_SHORT).show()
+            // Parse the error body to extract the error message
+            val rawError = response.errorBody()?.string()
+            val errorResponse = rawError.let { errorBody ->
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                gson.fromJson<ErrorResponse>(errorBody, type)
+            }
+            val errorBody = mapOf(
+                "message" to errorResponse.message,
+                "status" to errorResponse.status.toString()
+            )
+            _user.emit(errorBody)
+            errorResponse?.let {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            } ?: run {
+                Log.i("Error", "login: ${response.code()}")
+                Toast.makeText(context, "An error occurred: ${response.code()}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

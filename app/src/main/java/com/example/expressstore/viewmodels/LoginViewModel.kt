@@ -22,6 +22,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
 
     fun login(username: String, password: String){
         viewModelScope.launch {
+            Log.i("login view model", "view model: "+user.value)
             _loginState.value = LoginState.Loading
             repository.login(username, password)
             _loginState.value = LoginState.Success
