@@ -40,7 +40,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
 
     val user: State<Map<String, String>?> = viewModel.user.collectAsState()
-//    Text(text = user.value.toString(), fontSize = 12.sp)
     val loginState by viewModel.loginState.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
