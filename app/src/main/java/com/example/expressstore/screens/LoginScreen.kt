@@ -32,15 +32,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.expressstore.repositories.AuthRepository
-import com.example.expressstore.viewmodels.LoginState
+import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.LoginViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
 
-    val user: State<Map<String, String>?> = viewModel.user.collectAsState()
-    val loginState by viewModel.loginState.collectAsState()
+    val user: State<NetworkResult<Map<String, String>?>> = viewModel.user.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -74,11 +73,17 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
         }
         Spacer(modifier = Modifier.height(16.dp))
         Log.i("User came with error", "LoginScreen: "+user.value)
-        when (loginState) {
-            is LoginState.Loading -> Text("Loading...")
-            is LoginState.Success -> Text("Login Successful!")
-            is LoginState.Error -> Text("Error: ${(loginState as LoginState.Error).message}")
-            else -> {}
+        when (val result = user.value) {
+            is NetworkResult.Loading -> {
+                Text(text = "Loading...")
+            }
+            is NetworkResult.Success -> {
+                Text(text = "Logged in successfully !!")
+            }
+
+            is NetworkResult.Error -> {
+                Text(text = result.message.toString())
+            }
         }
     }
 }

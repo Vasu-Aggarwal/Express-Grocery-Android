@@ -6,7 +6,7 @@ import android.widget.Toast
 import com.example.expressstore.models.ErrorResponse
 import com.example.expressstore.services.AuthService
 import com.example.expressstore.services.TokenManager
-import com.example.expressstore.viewmodels.LoginState
+import com.example.expressstore.utils.NetworkResult
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,8 +18,8 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
                                          private val tokenManager: TokenManager,
                                         @ApplicationContext private val context: Context){
 
-    private val _user = MutableStateFlow<Map<String, String>?>(emptyMap())
-    val user : StateFlow<Map<String, String>?>
+    private val _user = MutableStateFlow<NetworkResult<Map<String, String>?>>(NetworkResult.Loading())
+    val user : StateFlow<NetworkResult<Map<String, String>?>>
     get() = _user
 
     suspend fun login(username: String, password: String){
@@ -32,7 +32,7 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
             val authToken = response.body()!!.get("token")
             val refreshToken = response.body()!!.get("refreshToken")
             tokenManager.saveAuthToken(authToken, refreshToken)
-            _user.emit(response.body())
+            _user.emit(NetworkResult.Success(response.body()))
         } else {
             // Parse the error body to extract the error message
             val rawError = response.errorBody()?.string()
@@ -45,7 +45,7 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
                 "message" to errorResponse.message,
                 "status" to errorResponse.status.toString()
             )
-            _user.emit(errorBody)
+            _user.emit(NetworkResult.Error(errorBody.get("message")))
             errorResponse?.let {
                 Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             } ?: run {
