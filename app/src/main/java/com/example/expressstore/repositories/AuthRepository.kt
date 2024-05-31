@@ -3,6 +3,7 @@ package com.example.expressstore.repositories
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.example.expressstore.di.AppModule
 import com.example.expressstore.models.ErrorResponse
 import com.example.expressstore.services.AuthService
 import com.example.expressstore.services.TokenManager
@@ -15,8 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(private val authService: AuthService,
-                                         private val tokenManager: TokenManager,
-                                        @ApplicationContext private val context: Context){
+                                         private val tokenManager: TokenManager){
 
     private val _user = MutableStateFlow<NetworkResult<Map<String, String>?>>(NetworkResult.Loading())
     val user : StateFlow<NetworkResult<Map<String, String>?>>
@@ -47,10 +47,9 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
             )
             _user.emit(NetworkResult.Error(errorBody.get("message")))
             errorResponse?.let {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                _user.emit(NetworkResult.Error("Something went wrong !!"))
             } ?: run {
                 Log.i("Error", "login: ${response.code()}")
-                Toast.makeText(context, "An error occurred: ${response.code()}", Toast.LENGTH_SHORT).show()
             }
         }
     }
