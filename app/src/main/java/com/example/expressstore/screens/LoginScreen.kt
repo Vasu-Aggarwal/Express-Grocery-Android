@@ -31,13 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.expressstore.repositories.AuthRepository
 import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.LoginViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavController){
 
     val user: State<NetworkResult<Map<String, String>?>> = viewModel.user.collectAsState()
     var email by remember { mutableStateOf("") }
@@ -78,6 +80,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
                 Text(text = "Loading...")
             }
             is NetworkResult.Success -> {
+                navController.navigate("home")
                 Text(text = "Logged in successfully !!")
             }
 
@@ -88,8 +91,8 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun LoginScreenPreview() {
+//    LoginScreen()
+//}
