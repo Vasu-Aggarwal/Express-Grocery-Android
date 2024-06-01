@@ -1,4 +1,4 @@
-package com.example.expressstore.models
+package com.example.expressstore.models.responses
 
 
 data class ErrorResponse (

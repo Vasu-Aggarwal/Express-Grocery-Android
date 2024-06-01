@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.expressstore.models.responses.UserLoginResponse
 import com.example.expressstore.repositories.AuthRepository
 import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.LoginViewModel
@@ -41,7 +42,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavController){
 
-    val user: State<NetworkResult<Map<String, String>?>> = viewModel.user.collectAsState()
+    val user: State<NetworkResult<UserLoginResponse>> = viewModel.user.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -74,7 +75,6 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavC
             Text("Login")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Log.i("User came with error", "LoginScreen: "+user.value)
         when (val result = user.value) {
             is NetworkResult.Loading -> {
                 Text(text = "Loading...")
@@ -90,9 +90,3 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavC
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun LoginScreenPreview() {
-//    LoginScreen()
-//}
