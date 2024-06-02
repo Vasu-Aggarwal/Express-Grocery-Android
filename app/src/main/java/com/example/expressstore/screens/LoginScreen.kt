@@ -16,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -76,8 +77,12 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavC
         }
         Spacer(modifier = Modifier.height(16.dp))
         when (val result = user.value) {
+            is NetworkResult.Idle -> {
+
+            }
+
             is NetworkResult.Loading -> {
-                Text(text = "Loading...")
+                CircularProgressIndicator()
             }
             is NetworkResult.Success -> {
                 navController.navigate("home")

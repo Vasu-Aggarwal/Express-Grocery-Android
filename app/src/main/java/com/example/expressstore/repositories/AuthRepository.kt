@@ -16,11 +16,12 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(private val authService: AuthService,
                                          private val tokenManager: TokenManager){
 
-    private val _user = MutableStateFlow<NetworkResult<UserLoginResponse>>(NetworkResult.Loading())
+    private val _user = MutableStateFlow<NetworkResult<UserLoginResponse>>(NetworkResult.Idle())
     val user : StateFlow<NetworkResult<UserLoginResponse>>
     get() = _user
 
     suspend fun login(username: String, password: String){
+        _user.emit(NetworkResult.Loading())
         val requestBody = UserLoginRequest(username, password)
         val response = authService.loginUser(requestBody)
         if (response.isSuccessful && response.body()!=null){
