@@ -19,5 +19,13 @@ fun App(){
         composable(route = "home"){
             HomeScreen()
         }
+
+//        composable(route = "cart"){
+//            CartScreen()
+//        }
+//
+//        composable(route = "account"){
+//            AccountScreen()
+//        }
     }
 }

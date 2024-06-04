@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ExpressStoreTheme {
-                val navcontroller = rememberNavController()
+                val navController = rememberNavController()
                 val bottomItems = listOf(
                     BottomNavigationItem(
                         title = "Home",
@@ -64,7 +65,14 @@ class MainActivity : ComponentActivity() {
                         unselectedItem = Icons.Outlined.Home,
                         hasNews = false
                     ),
-                    
+
+                    BottomNavigationItem(
+                        title = "Categories",
+                        selectedIcon = Icons.Filled.AddCircle,
+                        unselectedItem = Icons.Outlined.Home,
+                        hasNews = false
+                    ),
+
                     BottomNavigationItem(
                         title = "Cart",
                         selectedIcon = Icons.Filled.ShoppingCart,
@@ -80,24 +88,24 @@ class MainActivity : ComponentActivity() {
                         hasNews = false
                     )
                 )
-                
+
                 var selectedItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }
-                
+
                 Scaffold(bottomBar = {
                     NavigationBar {
                         bottomItems.forEachIndexed { index, item ->
                             NavigationBarItem(
                                 selected = selectedItemIndex == index,
-                                onClick = { 
+                                onClick = {
                                       selectedItemIndex = index
-                                    navcontroller.navigate("")
+//                                    navController.navigate("")
                                 },
                                 label = {
                                     Text(text = item.title)
                                 },
-                                icon = { 
+                                icon = {
                                     BadgedBox(
                                         badge = {
                                             if(item.badgeCount!=null){
@@ -112,7 +120,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             imageVector = if(index == selectedItemIndex)
                                                              item.selectedIcon
-                                                        else 
+                                                        else
                                                             item.unselectedItem
                                             , contentDescription = item.title)
                                     }
