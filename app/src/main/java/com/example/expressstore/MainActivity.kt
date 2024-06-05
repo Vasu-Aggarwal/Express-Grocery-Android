@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = Icons.Filled.ShoppingCart,
                         unselectedItem = Icons.Outlined.ShoppingCart,
                         hasNews = false,
-                        badgeCount = 0
+                        badgeCount = 10
                     ),
 
                     BottomNavigationItem(
