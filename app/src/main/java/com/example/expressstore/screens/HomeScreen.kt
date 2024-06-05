@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.expressstore.models.requests.CategoryDto
+import com.example.expressstore.models.requests.CouponDto
 import com.example.expressstore.models.requests.UserRegisterRequest
 import com.example.expressstore.models.responses.AllProductList
 import com.example.expressstore.models.responses.UserLoginResponse
@@ -79,7 +80,8 @@ fun ProductItem(product: AllProductList){
 fun ProductItemPreview(){
     Log.i("preview started", "ProductItemPreview: ")
     val userRequest = UserRegisterRequest("", "", "", "", "", false)
-    val categoryDto = CategoryDto(1, "Electronics", false, 1)
+    val couponDto = CouponDto(1, 100.00, 10, "CUSTOMER", "2024-06-01 12:30:45", "Test", 100.00, 1, "2024-06-01 12:30:45")
+    val categoryDto = CategoryDto(1, "Electronics", false, couponDto)
     val timestampString = "2024-06-01 12:30:45"
     val timestamp = Timestamp.valueOf(timestampString)
     val productList = AllProductList(
