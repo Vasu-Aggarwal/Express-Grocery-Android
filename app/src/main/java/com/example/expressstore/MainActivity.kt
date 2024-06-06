@@ -57,88 +57,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ExpressStoreTheme {
-                val navController = rememberNavController()
-                val bottomItems = listOf(
-                    BottomNavigationItem(
-                        title = "Home",
-                        selectedIcon = Icons.Filled.Home,
-                        unselectedItem = Icons.Outlined.Home,
-                        hasNews = false
-                    ),
-
-                    BottomNavigationItem(
-                        title = "Categories",
-                        selectedIcon = Icons.Filled.AddCircle,
-                        unselectedItem = Icons.Outlined.Home,
-                        hasNews = false
-                    ),
-
-                    BottomNavigationItem(
-                        title = "Cart",
-                        selectedIcon = Icons.Filled.ShoppingCart,
-                        unselectedItem = Icons.Outlined.ShoppingCart,
-                        hasNews = false,
-                        badgeCount = 10
-                    ),
-
-                    BottomNavigationItem(
-                        title = "Account",
-                        selectedIcon = Icons.Filled.Person,
-                        unselectedItem = Icons.Outlined.Person,
-                        hasNews = false
-                    )
-                )
-
-                var selectedItemIndex by rememberSaveable {
-                    mutableIntStateOf(0)
-                }
-
-                Scaffold(bottomBar = {
-                    NavigationBar {
-                        bottomItems.forEachIndexed { index, item ->
-                            NavigationBarItem(
-                                selected = selectedItemIndex == index,
-                                onClick = {
-                                      selectedItemIndex = index
-//                                    navController.navigate("")
-                                },
-                                label = {
-                                    Text(text = item.title)
-                                },
-                                icon = {
-                                    BadgedBox(
-                                        badge = {
-                                            if(item.badgeCount!=null){
-                                                Badge{
-                                                    Text(text = item.badgeCount.toString())
-                                                }
-                                            } else if(item.hasNews){
-                                                Badge()
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if(index == selectedItemIndex)
-                                                             item.selectedIcon
-                                                        else
-                                                            item.unselectedItem
-                                            , contentDescription = item.title)
-                                    }
-                                })
-                        }
-                    }
-                }){
-                }
                 App()
             }
         }
     }
 }
-
-data class BottomNavigationItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedItem: ImageVector,
-    val hasNews: Boolean,
-    val badgeCount: Int? = null
-)
