@@ -28,7 +28,8 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
         if (response.isSuccessful && response.body()!=null){
             val authToken = response.body()!!.token
             val refreshToken = response.body()!!.refreshToken
-            tokenManager.saveAuthToken(authToken, refreshToken)
+            val userUuid = response.body()!!.userUuid
+            tokenManager.saveAuthToken(authToken, refreshToken, userUuid)
             Log.e("I came here", "login: "+authToken)
             _user.emit(NetworkResult.Success(response.body()!!))
         } else {

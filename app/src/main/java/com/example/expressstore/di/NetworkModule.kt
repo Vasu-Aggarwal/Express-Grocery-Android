@@ -1,6 +1,7 @@
 package com.example.expressstore.di
 
 import com.example.expressstore.services.AuthService
+import com.example.expressstore.services.CartService
 import com.example.expressstore.services.ProductService
 import dagger.Module
 import dagger.Provides
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
-    private val BASE_URL = "http://10.100.102.250:9090"
+    private val BASE_URL = "http://10.100.103.66:9090"
 
     @Provides
     @Singleton
@@ -35,6 +36,12 @@ class NetworkModule {
     @Singleton
     fun provideProductService(retrofit: Retrofit): ProductService {
         return retrofit.create(ProductService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartService(retrofit: Retrofit): CartService {
+        return retrofit.create(CartService::class.java)
     }
 
 

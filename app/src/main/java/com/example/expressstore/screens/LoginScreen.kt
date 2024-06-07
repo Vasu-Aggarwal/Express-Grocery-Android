@@ -85,7 +85,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavC
                 CircularProgressIndicator()
             }
             is NetworkResult.Success -> {
-                navController.navigate("home")
+                navController.navigate("bottomBar")
                 Text(text = "Logged in successfully !!")
             }
 
