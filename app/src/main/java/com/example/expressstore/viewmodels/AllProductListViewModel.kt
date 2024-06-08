@@ -21,9 +21,4 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
             repository.productList()
         }
     }
-    fun getAllProducts() {
-        viewModelScope.launch {
-            repository.productList()
-        }
-    }
 }

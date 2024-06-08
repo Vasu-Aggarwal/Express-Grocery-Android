@@ -42,9 +42,6 @@ fun BottomNavigationBar(){
     val cartViewModel: CartViewModel = hiltViewModel()
     var cartCount by remember { mutableIntStateOf(1) }
     val cartCountValue: State<NetworkResult<CartCountResponse>> = cartViewModel.cartCount.collectAsState()
-    LaunchedEffect(Unit) {
-        cartViewModel.getCartCount()
-    }
 
     when(val result = cartCountValue.value){
         is NetworkResult.Error -> {}
