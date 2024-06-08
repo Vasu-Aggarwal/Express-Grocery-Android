@@ -1,6 +1,6 @@
-package com.example.expressstore.models.requests
+package com.example.expressstore.models.responses
 
-data class UserRegisterRequest(
+data class UserRegisterResponse(
     val userUuid: String,
     val username: String,
     val email: String,

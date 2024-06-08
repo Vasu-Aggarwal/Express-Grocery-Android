@@ -1,6 +1,7 @@
 package com.example.expressstore.repositories
 
 import android.util.Log
+import com.example.expressstore.models.requests.AddProductToCartRequest
 import com.example.expressstore.models.responses.CartCountResponse
 import com.example.expressstore.services.CartService
 import com.example.expressstore.services.TokenManager
@@ -18,14 +19,21 @@ class CartRepository @Inject constructor(private val cartService: CartService,
 
     suspend fun getCartCount(){
         val authToken = tokenManager.getAuthToken()
-        Log.i("USER UUID:", tokenManager.getUserUuid().toString())
         val response = cartService.getCartCount("Bearer $authToken", tokenManager.getUserUuid().toString())
         if (response.isSuccessful && response.body()!=null){
             _cartCount.emit(NetworkResult.Success(response.body()!!))
-            Log.i("Cart Count", "cartRepo: "+response.body())
         } else {
             _cartCount.emit(NetworkResult.Error(response.errorBody()?.string()!!))
-            Log.i("Cart Count", response.errorBody()?.string()!!)
+        }
+    }
+
+    suspend fun addProductToCart(product: Int, quantity: Int){
+        val authToken = tokenManager.getAuthToken()
+        val userUuid = tokenManager.getUserUuid()
+        val addProductToCartRequest = AddProductToCartRequest(userUuid.toString(), quantity, product)
+        val response = cartService.addToCart("Bearer $authToken", addProductToCartRequest)
+        if (response.isSuccessful && response.body()!=null){
+            TODO()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.expressstore.models.requests
+package com.example.expressstore.models.responses
 
 data class CategoryDto(
     val categoryId: Int,

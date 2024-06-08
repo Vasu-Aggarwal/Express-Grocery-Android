@@ -1,4 +1,4 @@
-package com.example.expressstore.models.requests
+package com.example.expressstore.models.responses
 
 data class CouponDto(
     val couponId: Int,

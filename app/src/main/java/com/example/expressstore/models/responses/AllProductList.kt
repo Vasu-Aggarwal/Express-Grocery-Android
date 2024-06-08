@@ -1,7 +1,5 @@
 package com.example.expressstore.models.responses
 
-import com.example.expressstore.models.requests.CategoryDto
-import com.example.expressstore.models.requests.UserRegisterRequest
 import java.sql.Timestamp
 
 data class AllProductList(
@@ -12,7 +10,7 @@ data class AllProductList(
     val isAvailable: Boolean,
     val aboutProduct: String,
     val productImg: String,
-    val addedBy: UserRegisterRequest,
+    val addedBy: UserRegisterResponse,
     val addedOn: Timestamp,
     val categories: List<CategoryDto>,
     val discountOnCategory: Int,

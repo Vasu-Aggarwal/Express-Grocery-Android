@@ -1,7 +1,6 @@
 package com.example.expressstore.screens
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,19 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,17 +23,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.expressstore.models.requests.CategoryDto
-import com.example.expressstore.models.requests.CouponDto
-import com.example.expressstore.models.requests.UserRegisterRequest
+import com.example.expressstore.models.responses.CategoryDto
+import com.example.expressstore.models.responses.CouponDto
+import com.example.expressstore.models.responses.UserRegisterResponse
 import com.example.expressstore.models.responses.AllProductList
-import com.example.expressstore.models.responses.UserLoginResponse
 import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.AllProductListViewModel
 import com.example.expressstore.viewmodels.CartViewModel
-import com.example.expressstore.viewmodels.LoginViewModel
 import java.sql.Timestamp
-import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(viewModel: AllProductListViewModel = hiltViewModel(), cartViewModel: CartViewModel = hiltViewModel()){
@@ -74,7 +64,10 @@ fun ProductItem(product: AllProductList, cartViewModel: CartViewModel){
                     .fillMaxWidth()
                     .height(30.dp)
                     .align(Alignment.CenterHorizontally)
-                    , onClick = { cartViewModel.increaseLocalCartCount() }) {
+                    , onClick = {
+                        cartViewModel.increaseLocalCartCount()
+                        //call the api to add the product to the cart
+                    }) {
                     Text(text = "Add to cart")
                 }
             }
@@ -86,7 +79,7 @@ fun ProductItem(product: AllProductList, cartViewModel: CartViewModel){
 @Preview(showBackground = true)
 fun ProductItemPreview(){
     Log.i("preview started", "ProductItemPreview: ")
-    val userRequest = UserRegisterRequest("", "", "", "", "", false)
+    val userRequest = UserRegisterResponse("", "", "", "", "", false)
     val couponDto = CouponDto(1, 100.00, 10, "CUSTOMER", "2024-06-01 12:30:45", "Test", 100.00, 1, "2024-06-01 12:30:45")
     val categoryDto = CategoryDto(1, "Electronics", false, couponDto)
     val timestampString = "2024-06-01 12:30:45"
