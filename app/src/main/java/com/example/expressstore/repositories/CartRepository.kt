@@ -7,6 +7,7 @@ import com.example.expressstore.services.TokenManager
 import com.example.expressstore.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val cartService: CartService,
@@ -25,6 +26,18 @@ class CartRepository @Inject constructor(private val cartService: CartService,
         } else {
             _cartCount.emit(NetworkResult.Error(response.errorBody()?.string()!!))
             Log.i("Cart Count", response.errorBody()?.string()!!)
+        }
+    }
+
+    fun incrementCartCount() {
+        _cartCount.update { currentResult ->
+            if (currentResult is NetworkResult.Success) {
+                val newCount = currentResult.data!!.cartCount + 1
+                val updatedResponse = currentResult.data.copy(cartCount = newCount)
+                NetworkResult.Success(updatedResponse)
+            } else {
+                currentResult
+            }
         }
     }
 }

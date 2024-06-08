@@ -6,6 +6,7 @@ import com.example.expressstore.models.responses.CartCountResponse
 import com.example.expressstore.repositories.CartRepository
 import com.example.expressstore.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,16 +15,17 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(private val cartRepository: CartRepository): ViewModel(){
     val cartCount: StateFlow<NetworkResult<CartCountResponse>>
         get() = cartRepository.cartCount
-
     init {
-        viewModelScope.launch {
-            cartRepository.getCartCount()
-        }
+        getCartCount()
     }
 
     fun getCartCount() {
         viewModelScope.launch {
             cartRepository.getCartCount()
         }
+    }
+
+    fun increaseLocalCartCount(){
+        cartRepository.incrementCartCount()
     }
 }

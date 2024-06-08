@@ -1,6 +1,7 @@
 package com.example.expressstore.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,24 +37,26 @@ import com.example.expressstore.models.responses.AllProductList
 import com.example.expressstore.models.responses.UserLoginResponse
 import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.AllProductListViewModel
+import com.example.expressstore.viewmodels.CartViewModel
 import com.example.expressstore.viewmodels.LoginViewModel
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
 @Composable
-fun HomeScreen(viewModel: AllProductListViewModel = hiltViewModel()){
+fun HomeScreen(viewModel: AllProductListViewModel = hiltViewModel(), cartViewModel: CartViewModel = hiltViewModel()){
     val products: State<NetworkResult<List<AllProductList>>> = viewModel.products.collectAsState()
     LazyColumn {
         products.value.data?.let { productList ->
             items(productList) { product ->
-                ProductItem(product = product)
+                ProductItem(product = product, cartViewModel)
             }
         }
     }
 }
 
 @Composable
-fun ProductItem(product: AllProductList){
+fun ProductItem(product: AllProductList, cartViewModel: CartViewModel){
+    val context = LocalContext.current
     Box(modifier = Modifier
         .padding(4.dp)
         .background(Color.White)
@@ -70,7 +74,7 @@ fun ProductItem(product: AllProductList){
                     .fillMaxWidth()
                     .height(30.dp)
                     .align(Alignment.CenterHorizontally)
-                    , onClick = { /*TODO*/ }) {
+                    , onClick = { cartViewModel.increaseLocalCartCount() }) {
                     Text(text = "Add to cart")
                 }
             }
@@ -101,5 +105,5 @@ fun ProductItemPreview(){
         1000,
         1000.00
     )
-    ProductItem(product = productList)
+//    ProductItem(product = productList, cartViewModel = CartViewModel())
 }

@@ -40,7 +40,7 @@ import com.example.expressstore.viewmodels.CartViewModel
 fun BottomNavigationBar(){
 
     val cartViewModel: CartViewModel = hiltViewModel()
-    var cartCount by remember { mutableIntStateOf(0) }
+    var cartCount by remember { mutableIntStateOf(1) }
     val cartCountValue: State<NetworkResult<CartCountResponse>> = cartViewModel.cartCount.collectAsState()
     LaunchedEffect(Unit) {
         cartViewModel.getCartCount()
@@ -136,7 +136,7 @@ fun BottomNavigationBar(){
         NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(innerPadding)){
 
             composable(route = "home"){
-                HomeScreen()
+                HomeScreen(cartViewModel = cartViewModel)
             }
 
             composable(route = "cart"){
