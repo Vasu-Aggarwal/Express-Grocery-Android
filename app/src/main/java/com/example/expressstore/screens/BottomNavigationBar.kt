@@ -92,6 +92,9 @@ fun BottomNavigationBar(){
                         selected = selectedItemIndex == index,
                         onClick = {
                             selectedItemIndex = index
+                            if(selectedItemIndex == 2){
+                                cartViewModel.getCartDetails()
+                            }
                             navController.navigate(
                                 when (index) {
                                     0 -> "home"
@@ -137,7 +140,7 @@ fun BottomNavigationBar(){
             }
 
             composable(route = "cart"){
-                CartScreen()
+                CartScreen(cartViewModel = cartViewModel)
             }
 
             composable(route = "account"){

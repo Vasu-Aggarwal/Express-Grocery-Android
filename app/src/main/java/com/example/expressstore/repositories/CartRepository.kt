@@ -5,6 +5,7 @@ import com.example.expressstore.models.requests.AddProductToCartRequest
 import com.example.expressstore.models.requests.RemoveFromCartRequest
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.CartCountResponse
+import com.example.expressstore.models.responses.ListCartDetailsResponse
 import com.example.expressstore.models.responses.RemoveFromCartResponse
 import com.example.expressstore.services.CartService
 import com.example.expressstore.services.TokenManager
@@ -27,6 +28,10 @@ class CartRepository @Inject constructor(private val cartService: CartService,
     private val _removeFromCart = MutableStateFlow<NetworkResult<RemoveFromCartResponse>>(NetworkResult.Idle())
     val removeFromCart : StateFlow<NetworkResult<RemoveFromCartResponse>>
         get() = _removeFromCart
+
+    private val _cartDetails = MutableStateFlow<NetworkResult<ListCartDetailsResponse>>(NetworkResult.Idle())
+    val cartDetails : StateFlow<NetworkResult<ListCartDetailsResponse>>
+        get() = _cartDetails
 
     suspend fun getCartCount(){
         val authToken = tokenManager.getAuthToken()
@@ -59,6 +64,17 @@ class CartRepository @Inject constructor(private val cartService: CartService,
             _removeFromCart.emit(NetworkResult.Success(response.body()!!))
         } else {
             _removeFromCart.emit(NetworkResult.Error(response.errorBody()?.string()!!))
+        }
+    }
+
+    suspend fun getCartDetails(){
+        val authToken = tokenManager.getAuthToken()
+        val userUuid = tokenManager.getUserUuid()
+        val response = cartService.getCartDetails("Bearer $authToken", userUuid.toString(), 1)
+        if (response.isSuccessful && response.body()!=null){
+            _cartDetails.emit(NetworkResult.Success(response.body()!!))
+        } else {
+            _cartDetails.emit(NetworkResult.Error(response.errorBody()!!.string()))
         }
     }
 

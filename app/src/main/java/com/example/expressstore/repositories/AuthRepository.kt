@@ -30,12 +30,10 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
             val refreshToken = response.body()!!.refreshToken
             val userUuid = response.body()!!.userUuid
             tokenManager.saveAuthToken(authToken, refreshToken, userUuid)
-            Log.e("I came here", "login: "+authToken)
             _user.emit(NetworkResult.Success(response.body()!!))
         } else {
             // Parse the error body to extract the error message
             val rawError = response.errorBody()?.string()
-            Log.i("NEW Response", "login: "+response.errorBody()?.string())
             val errorResponse = rawError.let { errorBody ->
                 val gson = Gson()
                 val type = object : TypeToken<ErrorResponse>() {}.type
