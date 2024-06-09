@@ -21,10 +21,8 @@ class ProductRepository @Inject constructor(private val productService: ProductS
         val response = productService.productList("Bearer $authToken")
         if (response.isSuccessful && response.body()!=null){
             _products.emit(NetworkResult.Success(response.body()!!))
-            Log.i("All products", "productList: "+response.body())
         } else {
             _products.emit(NetworkResult.Error(response.errorBody()?.string()!!))
-            Log.i("All products", response.errorBody()?.string()!!)
         }
     }
 }

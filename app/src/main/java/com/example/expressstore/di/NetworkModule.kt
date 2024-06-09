@@ -2,6 +2,7 @@ package com.example.expressstore.di
 
 import com.example.expressstore.services.AuthService
 import com.example.expressstore.services.CartService
+import com.example.expressstore.services.CategoryService
 import com.example.expressstore.services.ProductService
 import dagger.Module
 import dagger.Provides
@@ -42,6 +43,12 @@ class NetworkModule {
     @Singleton
     fun provideCartService(retrofit: Retrofit): CartService {
         return retrofit.create(CartService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCategoryService(retrofit: Retrofit): CategoryService {
+        return retrofit.create(CategoryService::class.java)
     }
 
 
