@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.CategoryDto
 import com.example.expressstore.models.responses.CouponDto
 import com.example.expressstore.models.responses.UserRegisterResponse
@@ -38,14 +40,18 @@ fun HomeScreen(viewModel: AllProductListViewModel = hiltViewModel(), cartViewMod
     LazyColumn {
         products.value.data?.let { productList ->
             items(productList) { product ->
-                ProductItem(product = product, cartViewModel)
+                ProductItem(product = product, cartViewModel, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun ProductItem(product: AllProductList, cartViewModel: CartViewModel){
+fun ProductItem(
+    product: AllProductList,
+    cartViewModel: CartViewModel,
+    viewModel: AllProductListViewModel
+){
     val context = LocalContext.current
     Box(modifier = Modifier
         .padding(4.dp)
@@ -67,6 +73,7 @@ fun ProductItem(product: AllProductList, cartViewModel: CartViewModel){
                     , onClick = {
                         cartViewModel.increaseLocalCartCount()
                         //call the api to add the product to the cart
+                        viewModel.addProductToCart(product.productId, 1)
                     }) {
                     Text(text = "Add to cart")
                 }

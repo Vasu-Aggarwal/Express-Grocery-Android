@@ -2,6 +2,7 @@ package com.example.expressstore.repositories
 
 import android.util.Log
 import com.example.expressstore.models.requests.AddProductToCartRequest
+import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.CartCountResponse
 import com.example.expressstore.services.CartService
 import com.example.expressstore.services.TokenManager
@@ -16,6 +17,10 @@ class CartRepository @Inject constructor(private val cartService: CartService,
     private val _cartCount = MutableStateFlow<NetworkResult<CartCountResponse>>(NetworkResult.Idle())
     val cartCount : StateFlow<NetworkResult<CartCountResponse>>
         get() = _cartCount
+
+    private val _addToCart = MutableStateFlow<NetworkResult<AddProductToCartResponse>>(NetworkResult.Idle())
+    val addToCart : StateFlow<NetworkResult<AddProductToCartResponse>>
+        get() = _addToCart
 
     suspend fun getCartCount(){
         val authToken = tokenManager.getAuthToken()
@@ -33,7 +38,9 @@ class CartRepository @Inject constructor(private val cartService: CartService,
         val addProductToCartRequest = AddProductToCartRequest(userUuid.toString(), quantity, product)
         val response = cartService.addToCart("Bearer $authToken", addProductToCartRequest)
         if (response.isSuccessful && response.body()!=null){
-            TODO()
+            _addToCart.emit(NetworkResult.Success(response.body()!!))
+        } else {
+            _addToCart.emit(NetworkResult.Error(response.errorBody()?.string()!!))
         }
     }
 
