@@ -2,8 +2,10 @@ package com.example.expressstore.repositories
 
 import android.util.Log
 import com.example.expressstore.models.requests.AddProductToCartRequest
+import com.example.expressstore.models.requests.RemoveFromCartRequest
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.CartCountResponse
+import com.example.expressstore.models.responses.RemoveFromCartResponse
 import com.example.expressstore.services.CartService
 import com.example.expressstore.services.TokenManager
 import com.example.expressstore.utils.NetworkResult
@@ -21,6 +23,10 @@ class CartRepository @Inject constructor(private val cartService: CartService,
     private val _addToCart = MutableStateFlow<NetworkResult<AddProductToCartResponse>>(NetworkResult.Idle())
     val addToCart : StateFlow<NetworkResult<AddProductToCartResponse>>
         get() = _addToCart
+
+    private val _removeFromCart = MutableStateFlow<NetworkResult<RemoveFromCartResponse>>(NetworkResult.Idle())
+    val removeFromCart : StateFlow<NetworkResult<RemoveFromCartResponse>>
+        get() = _removeFromCart
 
     suspend fun getCartCount(){
         val authToken = tokenManager.getAuthToken()
@@ -44,10 +50,34 @@ class CartRepository @Inject constructor(private val cartService: CartService,
         }
     }
 
+    suspend fun removeFromCart(product: Int){
+        val authToken = tokenManager.getAuthToken()
+        val userUuid = tokenManager.getUserUuid()
+        val removeFromCartRequest = RemoveFromCartRequest(userUuid.toString(), product)
+        val response = cartService.removeFromCart("Bearer $authToken", removeFromCartRequest)
+        if (response.isSuccessful && response.body()!=null){
+            _removeFromCart.emit(NetworkResult.Success(response.body()!!))
+        } else {
+            _removeFromCart.emit(NetworkResult.Error(response.errorBody()?.string()!!))
+        }
+    }
+
     fun incrementCartCount() {
         _cartCount.update { currentResult ->
             if (currentResult is NetworkResult.Success) {
                 val newCount = currentResult.data!!.cartCount + 1
+                val updatedResponse = currentResult.data.copy(cartCount = newCount)
+                NetworkResult.Success(updatedResponse)
+            } else {
+                currentResult
+            }
+        }
+    }
+
+    fun decrementCartCount() {
+        _cartCount.update { currentResult ->
+            if (currentResult is NetworkResult.Success) {
+                val newCount = currentResult.data!!.cartCount - 1
                 val updatedResponse = currentResult.data.copy(cartCount = newCount)
                 NetworkResult.Success(updatedResponse)
             } else {

@@ -28,4 +28,9 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
     fun increaseLocalCartCount(){
         cartRepository.incrementCartCount()
     }
+
+    fun decreaseLocalCartCount() {
+        cartRepository.decrementCartCount()
+    }
+
 }

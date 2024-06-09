@@ -1,9 +1,11 @@
 package com.example.expressstore.services
 
 import com.example.expressstore.models.requests.AddProductToCartRequest
+import com.example.expressstore.models.requests.RemoveFromCartRequest
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.AllProductList
 import com.example.expressstore.models.responses.CartCountResponse
+import com.example.expressstore.models.responses.RemoveFromCartResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,4 +19,7 @@ interface CartService {
 
     @POST("api/cart/addToCart")
     suspend fun addToCart(@Header("Authorization") token: String, @Body addProductToCartRequest: AddProductToCartRequest): Response<AddProductToCartResponse>
+
+    @POST("api/cart/removeFromCart")
+    suspend fun removeFromCart(@Header("Authorization") token: String, @Body removeFromCartRequest: RemoveFromCartRequest): Response<RemoveFromCartResponse>
 }

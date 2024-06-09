@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.AllProductList
+import com.example.expressstore.models.responses.RemoveFromCartResponse
 import com.example.expressstore.repositories.AuthRepository
 import com.example.expressstore.repositories.CartRepository
 import com.example.expressstore.repositories.ProductRepository
@@ -21,6 +22,9 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
     val addToCart: StateFlow<NetworkResult<AddProductToCartResponse>>
         get() = cartRepository.addToCart
 
+    val removeFromCart: StateFlow<NetworkResult<RemoveFromCartResponse>>
+        get() = cartRepository.removeFromCart
+
     init {
         viewModelScope.launch {
             repository.productList()
@@ -30,6 +34,12 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
     fun addProductToCart(product: Int, quantity: Int){
         viewModelScope.launch {
             cartRepository.addProductToCart(product, quantity)
+        }
+    }
+
+    fun removeProductFromCart(product: Int){
+        viewModelScope.launch {
+            cartRepository.removeFromCart(product)
         }
     }
 }
