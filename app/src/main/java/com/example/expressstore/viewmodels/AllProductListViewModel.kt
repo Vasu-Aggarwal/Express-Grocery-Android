@@ -42,4 +42,10 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
             cartRepository.removeFromCart(product)
         }
     }
+
+    fun getProductsByCategoryName(categoryName: String){
+        viewModelScope.launch {
+            repository.getProductsByCategory(categoryName)
+        }
+    }
 }

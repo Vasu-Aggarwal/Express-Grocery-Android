@@ -25,4 +25,14 @@ class ProductRepository @Inject constructor(private val productService: ProductS
             _products.emit(NetworkResult.Error(response.errorBody()?.string()!!))
         }
     }
+
+    suspend fun getProductsByCategory(category: String){
+        val authToken = tokenManager.getAuthToken()
+        val response = productService.getProductsByCategory("Bearer $authToken", category)
+        if (response.isSuccessful && response.body()!=null){
+            _products.emit(NetworkResult.Success(response.body()!!));
+        } else {
+            _products.emit(NetworkResult.Error(response.errorBody()!!.string()))
+        }
+    }
 }

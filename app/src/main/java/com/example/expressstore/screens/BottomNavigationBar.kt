@@ -18,7 +18,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -148,7 +147,14 @@ fun BottomNavigationBar(){
             }
 
             composable(route = "category"){
-                CategoryScreen()
+                CategoryScreen(navController = navController)
+            }
+
+            composable(route = "categoryProducts/{categoryName}"){ backStackEntry ->
+                val categoryName = backStackEntry.arguments?.getString("categoryName")
+                categoryName?.let {
+                    CategoryProductsScreen(categoryName = it)
+                }
             }
         }
     }
