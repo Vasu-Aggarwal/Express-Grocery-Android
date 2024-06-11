@@ -153,7 +153,7 @@ fun BottomNavigationBar(){
             composable(route = "categoryProducts/{categoryName}"){ backStackEntry ->
                 val categoryName = backStackEntry.arguments?.getString("categoryName")
                 categoryName?.let {
-                    CategoryProductsScreen(categoryName = it)
+                    CategoryProductsScreen(categoryName = it, cartViewModel = cartViewModel)
                 }
             }
         }

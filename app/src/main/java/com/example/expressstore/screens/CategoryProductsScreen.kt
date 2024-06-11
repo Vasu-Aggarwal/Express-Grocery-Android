@@ -17,7 +17,7 @@ fun CategoryProductsScreen(categoryName: String, productViewModel: AllProductLis
     LaunchedEffect(categoryName) {
         productViewModel.getProductsByCategoryName(categoryName)
     }
-    val products: State<NetworkResult<List<AllProductList>>> = productViewModel.products.collectAsState()
+    val products: State<NetworkResult<List<AllProductList>>> = productViewModel.productCategory.collectAsState()
     LazyColumn {
         products.value.data?.let { productList ->
             items(productList) { product ->

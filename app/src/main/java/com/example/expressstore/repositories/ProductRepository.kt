@@ -16,6 +16,10 @@ class ProductRepository @Inject constructor(private val productService: ProductS
     val products : StateFlow<NetworkResult<List<AllProductList>>>
         get() = _products
 
+    private val _productCategory = MutableStateFlow<NetworkResult<List<AllProductList>>>(NetworkResult.Loading())
+    val productCategory : StateFlow<NetworkResult<List<AllProductList>>>
+        get() = _productCategory
+
     suspend fun productList(){
         val authToken = tokenManager.getAuthToken()
         val response = productService.productList("Bearer $authToken")
@@ -30,9 +34,9 @@ class ProductRepository @Inject constructor(private val productService: ProductS
         val authToken = tokenManager.getAuthToken()
         val response = productService.getProductsByCategory("Bearer $authToken", category)
         if (response.isSuccessful && response.body()!=null){
-            _products.emit(NetworkResult.Success(response.body()!!));
+            _productCategory.emit(NetworkResult.Success(response.body()!!));
         } else {
-            _products.emit(NetworkResult.Error(response.errorBody()!!.string()))
+            _productCategory.emit(NetworkResult.Error(response.errorBody()!!.string()))
         }
     }
 }

@@ -19,6 +19,9 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
     val products: StateFlow<NetworkResult<List<AllProductList>>>
         get() = repository.products
 
+    val productCategory: StateFlow<NetworkResult<List<AllProductList>>>
+        get() = repository.productCategory
+
     val addToCart: StateFlow<NetworkResult<AddProductToCartResponse>>
         get() = cartRepository.addToCart
 
