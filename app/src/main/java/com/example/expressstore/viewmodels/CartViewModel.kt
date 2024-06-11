@@ -24,6 +24,9 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
     val removeProduct: StateFlow<NetworkResult<RemoveFromCartResponse>>
         get() = cartRepository.removeFromCart
 
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> = _loadingState
+
     init {
         getCartCount()
     }
@@ -42,7 +45,12 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     fun removeProductAndRefreshCart(product: Int){
         viewModelScope.launch {
-            cartRepository.removeProductAndRefreshCartDetails(product)
+            _loadingState.value = true
+            try {
+                cartRepository.removeProductAndRefreshCartDetails(product)
+            } finally {
+                _loadingState.value = false
+            }
         }
     }
 

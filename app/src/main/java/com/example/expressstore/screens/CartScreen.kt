@@ -1,6 +1,7 @@
 package com.example.expressstore.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,32 +49,56 @@ import kotlinx.coroutines.launch
 @Composable
 fun CartScreen(cartViewModel: CartViewModel = hiltViewModel(), navController: NavHostController, viewModel: AllProductListViewModel = hiltViewModel()){
     val cartDetails: State<NetworkResult<ListCartDetailsResponse>> = cartViewModel.cartDetails.collectAsState()
-    when(val result = cartDetails.value){
-        is NetworkResult.Error -> {}
-        is NetworkResult.Idle -> {}
-        is NetworkResult.Loading -> CircularProgressIndicator()
-        is NetworkResult.Success -> {
-            if (result.data?.totalProducts!!.toInt() == 0) {
-                Button(onClick = {
-                    navController.navigate("home") {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
+    val isLoading by cartViewModel.loadingState.collectAsState()
+    Box(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxSize().blur(if (isLoading) 16.dp else 0.dp)) {
+//        if (isLoading){
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color.Black.copy(alpha = 0.5f))
+//                    .blur(16.dp)
+//            ) {
+//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//            }
+//        } else {
+            when(val result = cartDetails.value){
+                is NetworkResult.Error -> {}
+                is NetworkResult.Idle -> {}
+                is NetworkResult.Loading -> CircularProgressIndicator()
+                is NetworkResult.Success -> {
+                    if (result.data?.totalProducts!!.toInt() == 0) {
+                        Button(onClick = {
+                            navController.navigate("home") {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                }
+                            }
+                        }) {
+                            Text(text = "Find Products")
                         }
-                    }
-                }) {
-                    Text(text = "Find Products")
-                }
-            } else {
-                Column {
-                    SubTotal(result.data)
-                    LazyColumn (userScrollEnabled = true, modifier = Modifier.fillMaxSize()){
-                        result.data.productDetail.let { products ->
-                            items(products){ product ->
-                                ProductDetailItem(product = product, cartViewModel, viewModel)
+                    } else {
+                        Column {
+                            SubTotal(result.data)
+                            LazyColumn (userScrollEnabled = true, modifier = Modifier.fillMaxSize()){
+                                result.data.productDetail.let { products ->
+                                    items(products){ product ->
+                                        ProductDetailItem(product = product, cartViewModel, viewModel)
+                                    }
+                                }
                             }
                         }
                     }
                 }
+            }
+        }
+        if (isLoading){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+            ) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
     }
@@ -96,11 +123,8 @@ fun ProductDetailItem(
 ) {
     var quantityInCart by rememberSaveable { mutableIntStateOf(product.productQuantity) }
     val context = LocalContext.current
-    val isLoading = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()){
-        if (isLoading.value) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
+
         Column{
             Row {
                 Text(text = product.product.productImg)
@@ -125,11 +149,9 @@ fun ProductDetailItem(
 //                    horizontalArrangement = Arrangement.Center
                 ) {
                     Button(onClick = {
-                        isLoading.value = true
                         cartViewModel.decreaseLocalCartCount()
 //                        viewModel.removeProductFromCart(product.product.productId)
                         cartViewModel.removeProductAndRefreshCart(product.product.productId)
-                        isLoading.value = false
                         quantityInCart--
                     }) {
                         if (quantityInCart == 1) {
@@ -155,6 +177,5 @@ fun ProductDetailItem(
                 }
             }
         }
-            }
     }
 }
