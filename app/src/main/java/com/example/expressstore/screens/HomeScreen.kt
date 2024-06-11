@@ -1,6 +1,8 @@
 package com.example.expressstore.screens
 
+import android.graphics.drawable.Icon
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -58,7 +64,6 @@ fun ProductItem(
     viewModel: AllProductListViewModel
 ){
     var quantityInCart by rememberSaveable { mutableIntStateOf(product.inCartQuantity) }
-//    val context = LocalContext.current
     Box(modifier = Modifier
         .padding(4.dp)
         .background(Color.White)
@@ -87,8 +92,16 @@ fun ProductItem(
                             cartViewModel.decreaseLocalCartCount()
                             viewModel.removeProductFromCart(product.productId)
                         }) {
-                            Text(text = "-")
+                            if (quantityInCart == 1) {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = "Delete the product"
+                                )
+                            }    else {
+                                Text(text = "-")
+                            }
                         }
+
                         Text(
                             text = quantityInCart.toString(),
                             modifier = Modifier.padding(horizontal = 16.dp)
