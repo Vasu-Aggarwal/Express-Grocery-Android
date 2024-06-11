@@ -2,6 +2,7 @@ package com.example.expressstore.repositories
 
 import android.util.Log
 import com.example.expressstore.models.responses.AllProductList
+import com.example.expressstore.models.responses.AllProductListPaginationResponse
 import com.example.expressstore.models.responses.UserLoginResponse
 import com.example.expressstore.services.ProductService
 import com.example.expressstore.services.TokenManager
@@ -12,17 +13,18 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor(private val productService: ProductService,
                                             private val tokenManager: TokenManager) {
-    private val _products = MutableStateFlow<NetworkResult<List<AllProductList>>>(NetworkResult.Loading())
-    val products : StateFlow<NetworkResult<List<AllProductList>>>
+    private val _products = MutableStateFlow<NetworkResult<AllProductListPaginationResponse>>(NetworkResult.Loading())
+    val products : StateFlow<NetworkResult<AllProductListPaginationResponse>>
         get() = _products
 
     private val _productCategory = MutableStateFlow<NetworkResult<List<AllProductList>>>(NetworkResult.Loading())
     val productCategory : StateFlow<NetworkResult<List<AllProductList>>>
         get() = _productCategory
 
-    suspend fun productList(){
+    suspend fun productList(pageNumber: Int){
         val authToken = tokenManager.getAuthToken()
-        val response = productService.productList("Bearer $authToken")
+        val userUuid = tokenManager.getUserUuid()
+        val response = productService.productList("Bearer $authToken", pageNumber, 10, userUuid.toString(), "productName")
         if (response.isSuccessful && response.body()!=null){
             _products.emit(NetworkResult.Success(response.body()!!))
         } else {

@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +33,7 @@ import com.example.expressstore.models.responses.CategoryDto
 import com.example.expressstore.models.responses.CouponDto
 import com.example.expressstore.models.responses.UserRegisterResponse
 import com.example.expressstore.models.responses.AllProductList
+import com.example.expressstore.models.responses.AllProductListPaginationResponse
 import com.example.expressstore.utils.NetworkResult
 import com.example.expressstore.viewmodels.AllProductListViewModel
 import com.example.expressstore.viewmodels.CartViewModel
@@ -39,9 +41,9 @@ import java.sql.Timestamp
 
 @Composable
 fun HomeScreen(viewModel: AllProductListViewModel = hiltViewModel(), cartViewModel: CartViewModel = hiltViewModel()){
-    val products: State<NetworkResult<List<AllProductList>>> = viewModel.products.collectAsState()
+    val products: State<NetworkResult<AllProductListPaginationResponse>> = viewModel.products.collectAsState()
     LazyColumn {
-        products.value.data?.let { productList ->
+        products.value.data?.products?.let { productList ->
             items(productList) { product ->
                 ProductItem(product = product, cartViewModel, viewModel)
             }
@@ -55,7 +57,7 @@ fun ProductItem(
     cartViewModel: CartViewModel,
     viewModel: AllProductListViewModel
 ){
-    var quantityInCart by remember { mutableIntStateOf(0) }
+    var quantityInCart by rememberSaveable { mutableIntStateOf(product.inCartQuantity) }
 //    val context = LocalContext.current
     Box(modifier = Modifier
         .padding(4.dp)
@@ -139,7 +141,8 @@ fun ProductItemPreview(){
         timestamp,
         listOf(categoryDto),
         1000,
-        1000.00
+        1000.00,
+        1
     )
     val cartViewModel : CartViewModel = hiltViewModel() // You should pass appropriate parameters if needed
     val allProductListViewModel: AllProductListViewModel = hiltViewModel()// You should pass appropriate parameters if needed

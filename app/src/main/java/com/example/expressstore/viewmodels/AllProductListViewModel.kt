@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.AllProductList
+import com.example.expressstore.models.responses.AllProductListPaginationResponse
 import com.example.expressstore.models.responses.RemoveFromCartResponse
 import com.example.expressstore.repositories.AuthRepository
 import com.example.expressstore.repositories.CartRepository
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllProductListViewModel@Inject constructor(private val repository: ProductRepository, private val cartRepository: CartRepository) : ViewModel() {
-    val products: StateFlow<NetworkResult<List<AllProductList>>>
+    val products: StateFlow<NetworkResult<AllProductListPaginationResponse>>
         get() = repository.products
 
     val productCategory: StateFlow<NetworkResult<List<AllProductList>>>
@@ -30,7 +31,7 @@ class AllProductListViewModel@Inject constructor(private val repository: Product
 
     init {
         viewModelScope.launch {
-            repository.productList()
+            repository.productList(0)
         }
     }
 

@@ -14,5 +14,6 @@ data class AllProductList(
     val addedOn: Timestamp,
     val categories: List<CategoryDto>,
     val discountOnCategory: Int,
-    val productDiscountedPrice: Double
+    val productDiscountedPrice: Double,
+    val inCartQuantity: Int
 )
