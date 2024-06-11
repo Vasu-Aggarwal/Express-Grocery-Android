@@ -19,5 +19,9 @@ interface ProductService {
     ): Response<AllProductListPaginationResponse>
 
     @GET("/api/product/searchProduct")
-    suspend fun getProductsByCategory(@Header("Authorization") token: String, @Query("categoryName") categoryName: String): Response<List<AllProductList>>
+    suspend fun getProductsByCategory(
+        @Header("Authorization") token: String,
+        @Query("categoryName") categoryName: String,
+        @Query("uuid") userUuid: String
+    ): Response<List<AllProductList>>
 }
