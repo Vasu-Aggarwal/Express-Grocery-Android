@@ -52,16 +52,6 @@ fun CartScreen(cartViewModel: CartViewModel = hiltViewModel(), navController: Na
     val isLoading by cartViewModel.loadingState.collectAsState()
     Box(modifier = Modifier.fillMaxSize()){
         Box(modifier = Modifier.fillMaxSize().blur(if (isLoading) 16.dp else 0.dp)) {
-//        if (isLoading){
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(Color.Black.copy(alpha = 0.5f))
-//                    .blur(16.dp)
-//            ) {
-//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//            }
-//        } else {
             when(val result = cartDetails.value){
                 is NetworkResult.Error -> {}
                 is NetworkResult.Idle -> {}
