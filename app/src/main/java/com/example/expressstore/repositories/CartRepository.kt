@@ -70,12 +70,17 @@ class CartRepository @Inject constructor(private val cartService: CartService,
     suspend fun getCartDetails(){
         val authToken = tokenManager.getAuthToken()
         val userUuid = tokenManager.getUserUuid()
-        val response = cartService.getCartDetails("Bearer $authToken", userUuid.toString(), 1)
+        val response = cartService.getCartDetails("Bearer $authToken", userUuid.toString(), 2)
         if (response.isSuccessful && response.body()!=null){
             _cartDetails.emit(NetworkResult.Success(response.body()!!))
         } else {
             _cartDetails.emit(NetworkResult.Error(response.errorBody()!!.string()))
         }
+    }
+
+    suspend fun removeProductAndRefreshCartDetails(product: Int){
+        removeFromCart(product)
+        getCartDetails()
     }
 
     fun incrementCartCount() {

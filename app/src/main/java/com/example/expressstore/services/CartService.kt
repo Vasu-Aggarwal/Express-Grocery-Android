@@ -26,5 +26,5 @@ interface CartService {
     suspend fun removeFromCart(@Header("Authorization") token: String, @Body removeFromCartRequest: RemoveFromCartRequest): Response<RemoveFromCartResponse>
 
     @GET("api/cart/getCartDetails/{userUuid}")
-    suspend fun getCartDetails(@Header("Authorization") token: String, @Path("userUuid") userUuid: String, @Query(value = "v") v: Int = 1): Response<ListCartDetailsResponse>
+    suspend fun getCartDetails(@Header("Authorization") token: String, @Path("userUuid") userUuid: String, @Query(value = "v") v: Int = 2): Response<ListCartDetailsResponse>
 }

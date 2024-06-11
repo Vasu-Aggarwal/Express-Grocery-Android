@@ -139,7 +139,7 @@ fun BottomNavigationBar(){
             }
 
             composable(route = "cart"){
-                CartScreen(cartViewModel = cartViewModel)
+                CartScreen(cartViewModel = cartViewModel, navController = navController)
             }
 
             composable(route = "account"){
