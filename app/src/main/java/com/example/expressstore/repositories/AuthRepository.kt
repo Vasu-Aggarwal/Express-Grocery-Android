@@ -24,26 +24,31 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
     suspend fun login(username: String, password: String){
         _user.emit(NetworkResult.Loading())
         val requestBody = UserLoginRequest(username, password)
-        val response = authService.loginUser(requestBody)
-        if (response.isSuccessful && response.body()!=null){
-            val authToken = response.body()!!.token
-            val refreshToken = response.body()!!.refreshToken
-            val userUuid = response.body()!!.userUuid
-            tokenManager.saveAuthToken(authToken, refreshToken, userUuid)
-            _user.emit(NetworkResult.Success(response.body()!!))
-        } else {
-            // Parse the error body to extract the error message
-            val rawError = response.errorBody()?.string()
-            val errorResponse = rawError.let { errorBody ->
-                val gson = Gson()
-                val type = object : TypeToken<ErrorResponse>() {}.type
-                gson.fromJson<ErrorResponse>(errorBody, type)
+        try {
+            val response = authService.loginUser(requestBody)
+            if (response.isSuccessful && response.body() != null) {
+                val authToken = response.body()!!.token
+                val refreshToken = response.body()!!.refreshToken
+                val userUuid = response.body()!!.userUuid
+                tokenManager.saveAuthToken(authToken, refreshToken, userUuid)
+                _user.emit(NetworkResult.Success(response.body()!!))
+            } else {
+                // Parse the error body to extract the error message
+                val rawError = response.errorBody()?.string()
+                val errorResponse = rawError.let { errorBody ->
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    gson.fromJson<ErrorResponse>(errorBody, type)
+                }
+                errorResponse?.let {
+                    _user.emit(NetworkResult.Error(errorResponse.message))
+                } ?: run {
+                    Log.i("Error", "login: ${response.code()}")
+                }
             }
-            errorResponse?.let {
-                _user.emit(NetworkResult.Error(errorResponse.message))
-            } ?: run {
-                Log.i("Error", "login: ${response.code()}")
-            }
+        } catch (e: Exception){
+            Log.i("Error", "login: ${e.message}")
+            _user.emit(NetworkResult.Error("Something went Wrong !!"))
         }
     }
 }
