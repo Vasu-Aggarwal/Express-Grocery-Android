@@ -1,6 +1,6 @@
 package com.example.expressstore.screens
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,39 +19,34 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.expressstore.models.responses.AddProductToCartResponse
 import com.example.expressstore.models.responses.ListCartDetailsResponse
-import com.example.expressstore.models.responses.RemoveFromCartResponse
 import com.example.expressstore.utils.NetworkResult
-import com.example.expressstore.viewmodels.AllProductListViewModel
 import com.example.expressstore.viewmodels.CartViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 @Composable
-fun CartScreen(cartViewModel: CartViewModel = hiltViewModel(), navController: NavHostController, viewModel: AllProductListViewModel = hiltViewModel()){
+fun CartScreen(cartViewModel: CartViewModel = hiltViewModel(), navController: NavHostController){
     val cartDetails: State<NetworkResult<ListCartDetailsResponse>> = cartViewModel.cartDetails.collectAsState()
     val isLoading by cartViewModel.loadingState.collectAsState()
     Box(modifier = Modifier.fillMaxSize()){
-        Box(modifier = Modifier.fillMaxSize().blur(if (isLoading) 16.dp else 0.dp)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .blur(if (isLoading) 16.dp else 0.dp)) {
             when(val result = cartDetails.value){
                 is NetworkResult.Error -> {}
                 is NetworkResult.Idle -> {}
@@ -73,7 +68,7 @@ fun CartScreen(cartViewModel: CartViewModel = hiltViewModel(), navController: Na
                             LazyColumn (userScrollEnabled = true, modifier = Modifier.fillMaxSize()){
                                 result.data.productDetail.let { products ->
                                     items(products){ product ->
-                                        ProductDetailItem(product = product, cartViewModel, viewModel)
+                                        ProductDetailItem(product = product, cartViewModel)
                                     }
                                 }
                             }
@@ -99,7 +94,7 @@ fun SubTotal(data: ListCartDetailsResponse?) {
     Column {
         Text(text = "Subtotal Rs."+data?.afterDiscount.toString())
         Button(onClick = { /*TODO*/ }) {
-            Text(text = "Proceed to Buy ("+data?.totalProducts+" items)")
+            Text(text = "Proceed to Buy ("+data?.totalInCartItems+" items)")
         }
         HorizontalDivider()
     }
@@ -108,13 +103,10 @@ fun SubTotal(data: ListCartDetailsResponse?) {
 @Composable
 fun ProductDetailItem(
     product: AddProductToCartResponse,
-    cartViewModel: CartViewModel,
-    viewModel: AllProductListViewModel
+    cartViewModel: CartViewModel
 ) {
-    var quantityInCart by rememberSaveable { mutableIntStateOf(product.productQuantity) }
-    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()){
-
+    var quantityInCartTemp = product.productQuantity
         Column{
             Row {
                 Text(text = product.product.productImg)
@@ -140,11 +132,11 @@ fun ProductDetailItem(
                 ) {
                     Button(onClick = {
                         cartViewModel.decreaseLocalCartCount()
-//                        viewModel.removeProductFromCart(product.product.productId)
                         cartViewModel.removeProductAndRefreshCart(product.product.productId)
-                        quantityInCart--
+                        quantityInCartTemp--
                     }) {
-                        if (quantityInCart == 1) {
+                        Log.i("QuantityInCart", "ProductDetailItem: "+product.productQuantity)
+                        if (product.productQuantity == 1) {
                             Icon(
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = "Delete the product"
@@ -154,13 +146,13 @@ fun ProductDetailItem(
                         }
                     }
                     Text(
-                        text = quantityInCart.toString(),
+                        text = product.productQuantity.toString(),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Button(onClick = {
-                        quantityInCart++
                         cartViewModel.increaseLocalCartCount()
-                        viewModel.addProductToCart(product.product.productId, 1)
+                        cartViewModel.addProductAndRefreshCart(product.product.productId, 1)
+                        quantityInCartTemp++
                     }) {
                         Text(text = "+")
                     }

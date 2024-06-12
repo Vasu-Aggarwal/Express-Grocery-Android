@@ -83,6 +83,11 @@ class CartRepository @Inject constructor(private val cartService: CartService,
         getCartDetails()
     }
 
+    suspend fun addProductAndRefreshCartDetails(product: Int, quantity: Int){
+        addProductToCart(product, quantity)
+        getCartDetails()
+    }
+
     fun incrementCartCount() {
         _cartCount.update { currentResult ->
             if (currentResult is NetworkResult.Success) {

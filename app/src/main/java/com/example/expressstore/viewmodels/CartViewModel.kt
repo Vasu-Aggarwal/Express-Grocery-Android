@@ -54,6 +54,17 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         }
     }
 
+    fun addProductAndRefreshCart(product: Int, quantity: Int){
+        viewModelScope.launch {
+            _loadingState.value = true
+            try {
+                cartRepository.addProductAndRefreshCartDetails(product, quantity)
+            } finally {
+                _loadingState.value = false
+            }
+        }
+    }
+
     fun increaseLocalCartCount(){
         cartRepository.incrementCartCount()
     }
